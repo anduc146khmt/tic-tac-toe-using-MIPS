@@ -7,13 +7,18 @@
     o_symbol: .asciiz "O"
     blank: .asciiz " "
     input_again_prompt: .asciiz "Invalid input, please try again?\n"
-    x_turn_prompt: .asciiz "X turn, please choose a number: "
-    o_turn_prompt: .asciiz "O turn, please choose a number: "
-    x_win_prompt: .asciiz "X win!\n"
-    o_win_prompt: .asciiz "O win!\n"
-    draw_prompt: .asciiz "DRAW\n"
-    again_prompt: .asciiz "Input 0 to play again, otherwise to stop\n"
+  x_turn_prompt: .asciiz "X turn, please choose a number: "
+  o_turn_prompt: .asciiz "O turn, please choose a number: "
+   again_prompt: .asciiz "Input 0 to play again, otherwise to stop\n"
+            sep: .asciiz "=================================\n"
+   border_title: .asciiz "#                               #\n"
+           game: .asciiz "#          TIC-TAC-TOE          #\n"
+   x_win_prompt: .asciiz "#            X WIN!             #\n"
+   o_win_prompt: .asciiz "#            O WIN!             #\n"
+  	draw_prompt: .asciiz "#             DRAW              #\n"
 .text
+	la $a1, game
+	jal print_title
     main:
     	# reset board
     	la $s0, board
@@ -58,8 +63,8 @@
 
 			
 		
-		la $a0, draw_prompt
-		jal print_string
+		la $a1, draw_prompt
+		jal print_title
 		
 		end:
 		la $a0, again_prompt
@@ -241,16 +246,16 @@
     	
     	x_win:
     		addi $s7, $zero, 1
-    		la $a0, x_win_prompt
-    		jal print_string
+    		la $a1, x_win_prompt
+    		jal print_title
 			lw $ra, 0($sp)
     		lw $s0, 4($sp)
     		jr $ra
     	
     	o_win:
     		addi $s7, $zero, -1
-    		la $a0, o_win_prompt
-    		jal print_string
+    		la $a1, o_win_prompt
+    		jal print_title
 			lw $ra, 0($sp)
     		lw $s0, 4($sp)
     		jr $ra
@@ -276,5 +281,24 @@
     	add $v1, $a1, $a2
     	add $v1, $v1, $a3
     	jr $ra
-        
+    	
+    print_title:
+    	addi $sp, $sp, -4
+    	sw $ra, 0($sp)
+      	la $a0, end_line
+		jal print_string
+		la $a0, sep
+		jal print_string
+		la $a0, border_title
+		jal print_string
+		move $a0, $a1
+		jal print_string
+		la $a0, border_title
+		jal print_string
+		la $a0, sep
+		jal print_string
+		
+		lw $ra, 0($sp)
+		addi $sp, $sp, 4
+		jr $ra
 
